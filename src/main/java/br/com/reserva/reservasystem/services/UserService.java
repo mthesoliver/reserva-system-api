@@ -3,25 +3,38 @@ package br.com.reserva.reservasystem.services;
 import br.com.reserva.reservasystem.dto.*;
 import br.com.reserva.reservasystem.enums.UserRole;
 import br.com.reserva.reservasystem.exception.UserRegisterException;
+import br.com.reserva.reservasystem.model.Roles;
 import br.com.reserva.reservasystem.model.User;
+import br.com.reserva.reservasystem.repository.RolesRepository;
 import br.com.reserva.reservasystem.repository.ServiceRepository;
 import br.com.reserva.reservasystem.repository.UserRepository;
 import jakarta.validation.ValidationException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class UserService {
 
     @Autowired
     private UserRepository userRepository;
 
     @Autowired
+    private RolesRepository rolesRepository;
+
+    @Autowired
     private ServiceRepository serviceRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public List<UserDTO> listAllUsers() {
         return userRepository.findAll().stream().map(UserDTO::new)
@@ -44,13 +57,18 @@ public class UserService {
     }
 
 
-    public void userRegistration(UserRegistrationDTO dto){
+    public MessageDTO userRegistration(UserRegistrationDTO dto){
         boolean alreadyExists = userRepository.existsByPhoneOrEmail(dto.telefone(), dto.email());
 
         if(alreadyExists){
             throw new UserRegisterException("Dados de usuário já existentes");
         }else{
-            userRepository.save(new User(dto));
+            User user = new User(dto);
+            user.setPassword(passwordEncoder.encode(dto.password()));
+            Set<Roles> roles = rolesRepository.findByRole(dto.funcao()).stream().collect(Collectors.toSet());
+            user.setRoles(roles);
+            userRepository.save(user);
+            return new MessageDTO("Usuário " + user.getEmail() + " salvo com sucesso");
         }
     }
 

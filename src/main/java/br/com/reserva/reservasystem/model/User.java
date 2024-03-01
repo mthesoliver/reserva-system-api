@@ -6,18 +6,22 @@ import br.com.reserva.reservasystem.dto.UserUpdateDTO;
 import br.com.reserva.reservasystem.enums.UserRole;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 @NoArgsConstructor
 @Getter
 @Entity
+@Builder
+@AllArgsConstructor
 @Table(name = "users")
-public class User {
+public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -30,6 +34,19 @@ public class User {
     @Column(name = "funcao")
     @Setter
     private UserRole role;
+
+    @ManyToMany
+    @Setter
+    @JoinTable(name="user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name="roles_id"))
+    private Set<Roles> roles;
+
+    private boolean expired = false;
+    private boolean locked = false;
+    private  boolean credentialsExpired = false;
+    private boolean disable = false;
+
+    @Setter
+    private String password;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Services> services = new ArrayList<>();
@@ -81,5 +98,35 @@ public class User {
     public void setServices() {
         List<Services> services = new ArrayList<>();
         this.services= services;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return roles;
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return !expired;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return !locked;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return !credentialsExpired;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return !disable;
     }
 }
