@@ -35,7 +35,7 @@ public class User implements UserDetails {
     @Setter
     private UserRole role;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @Setter
     @JoinTable(name="user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name="roles_id"))
     private Set<Roles> roles;
