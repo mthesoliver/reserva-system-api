@@ -39,7 +39,7 @@ public class User implements UserDetails {
     @Setter
     @JoinTable(name="user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name="roles_id"))
     private Set<Roles> roles;
-
+    
     private boolean expired = false;
     private boolean locked = false;
     private  boolean credentialsExpired = false;

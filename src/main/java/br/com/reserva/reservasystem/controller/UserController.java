@@ -8,6 +8,7 @@ import br.com.reserva.reservasystem.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,12 +16,14 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/users")
+@PreAuthorize("ADMIN")
 public class UserController {
 
     @Autowired
     private UserService userService;
 
     @GetMapping
+    @PreAuthorize("ADMIN")
     public ResponseEntity<List<UserDTO>> listAllUsers(){
         List<UserDTO> userList = userService.listAllUsers();
         return ResponseEntity.ok(userList);

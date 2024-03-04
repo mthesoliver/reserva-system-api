@@ -63,8 +63,6 @@ public class Reservation {
         this.status = Status.AGUARDANDO_APROVACAO;
     }
 
-
-
     public void updateReservationStatus(ReservationUpdateDTO dto) {
         this.status = dto.status();
         this.dateTimeRequest = LocalDateTime.now();
