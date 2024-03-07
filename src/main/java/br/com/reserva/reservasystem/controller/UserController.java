@@ -16,14 +16,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/users")
-@PreAuthorize("ADMIN")
 public class UserController {
 
     @Autowired
     private UserService userService;
 
     @GetMapping
-    @PreAuthorize("ADMIN")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<List<UserDTO>> listAllUsers(){
         List<UserDTO> userList = userService.listAllUsers();
         return ResponseEntity.ok(userList);
