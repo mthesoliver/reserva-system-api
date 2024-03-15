@@ -55,7 +55,6 @@ public class UserService {
         return userRepository.findByRole(role).stream().map(UserByRoleDTO::new).collect(Collectors.toList());
     }
 
-
     public MessageDTO userRegistration(UserRegistrationDTO dto){
         boolean alreadyExists = userRepository.existsByPhoneOrEmail(dto.telefone(), dto.email());
 
@@ -76,6 +75,7 @@ public class UserService {
         user.userUpdateData(dto);
     }
 
+
     public User deleteUserByIdOrName(String id){
         Optional<User> optionalUser;
         try {
@@ -93,4 +93,8 @@ public class UserService {
         return optionalUser.orElseThrow(() -> new ValidationException("Usuário não encontrado"));
     }
 
+    public List<UserEmailDTO> listAllEmails() {
+        return userRepository.findAll().stream().map(UserEmailDTO::new)
+                .collect(Collectors.toList());
+    }
 }

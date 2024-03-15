@@ -28,6 +28,12 @@ public class UserController {
         return ResponseEntity.ok(userList);
     }
 
+//    @GetMapping("/email")
+//    public ResponseEntity<List<UserEmailDTO>> listAllEmail(){
+//        List<UserEmailDTO> userList = userService.listAllEmails();
+//        return ResponseEntity.ok(userList);
+//    }
+
     @GetMapping("/{idOrName}")
     public ResponseEntity<UserByIdDTO> listUserById(@PathVariable String idOrName){
         try{
@@ -89,6 +95,4 @@ public class UserController {
             return ResponseEntity.notFound().build();
         }
     }
-
-
 }
