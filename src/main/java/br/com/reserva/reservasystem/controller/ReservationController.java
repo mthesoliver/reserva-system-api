@@ -28,7 +28,7 @@ public class ReservationController {
     private ServiceRepository serviceRepository;
 
 
-    @GetMapping("services/{id}/reservations")
+    @GetMapping("/resource/services/{id}/reservations")
     public ResponseEntity<List<Reservation>> listReservationsById(@PathVariable Long id){
         try{
             List<Reservation> reservations = reservationService.getReservationsById(id);
@@ -38,7 +38,7 @@ public class ReservationController {
         }
     }
 
-    @GetMapping("services/{id}/reservations/{status}")
+    @GetMapping("/resource/services/{id}/reservations/{status}")
     public ResponseEntity<List<ReservationListDTO>> findByStatus(@PathVariable Long id, @PathVariable String status){
         try{
             List<ReservationListDTO> reservations = reservationService.listReservationByStatus(status);
@@ -48,7 +48,7 @@ public class ReservationController {
         }
     }
 
-    @PostMapping("services/{id}/reservations")
+    @PostMapping("/resource/services/{id}/reservations")
     @Transactional
     public ResponseEntity<String> registerReservation(@PathVariable Long id, @RequestBody @Valid ReservationDTO dto){
         try{
@@ -59,7 +59,7 @@ public class ReservationController {
         }
     }
 
-    @PutMapping("services/{id}/reservations/{reservationId}")
+    @PutMapping("/resource/services/{id}/reservations/{reservationId}")
     @Transactional
     public ResponseEntity updateReservation(@PathVariable Long id, @PathVariable Long reservationId, @RequestBody @Valid ReservationUpdateDTO dto){
         try{
@@ -70,7 +70,7 @@ public class ReservationController {
         }
     }
 
-    @DeleteMapping("services/{id}/reservations/{reservationId}")
+    @DeleteMapping("/resource/services/{id}/reservations/{reservationId}")
     public ResponseEntity deleteReservation(@PathVariable Long id, @PathVariable Long reservationId){
         try{
             Reservation reservation = reservationService.deleteReservationById(id, reservationId);

@@ -8,6 +8,7 @@ import br.com.reserva.reservasystem.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/resource/users")
 public class UserController {
 
     @Autowired
@@ -28,11 +29,12 @@ public class UserController {
         return ResponseEntity.ok(userList);
     }
 
-//    @GetMapping("/email")
-//    public ResponseEntity<List<UserEmailDTO>> listAllEmail(){
-//        List<UserEmailDTO> userList = userService.listAllEmails();
-//        return ResponseEntity.ok(userList);
-//    }
+    @GetMapping("/email")
+    @PreAuthorize("permitAll()")
+    public ResponseEntity<List<UserEmailDTO>> listAllEmail(){
+        List<UserEmailDTO> userList = userService.listAllEmails();
+        return ResponseEntity.ok(userList);
+    }
 
     @GetMapping("/{idOrName}")
     public ResponseEntity<UserByIdDTO> listUserById(@PathVariable String idOrName){
@@ -64,8 +66,10 @@ public class UserController {
         }
     }
 
-    @PostMapping
+    @PostMapping("/register")
+    @PreAuthorize("permitAll()")
     @Transactional
+    @CrossOrigin("*")
     public ResponseEntity<String> registerUser(@RequestBody @Valid UserRegistrationDTO dto){
         try {
             userService.userRegistration(dto);
@@ -87,6 +91,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
+    //@PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity deleteUserById(@PathVariable String id){
         try{
             User user = userService.deleteUserByIdOrName(id);

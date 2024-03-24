@@ -10,10 +10,7 @@ import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @NoArgsConstructor
 @Getter
@@ -77,6 +74,13 @@ public class User implements UserDetails {
     }
 
     public User(String name, String email, String phone) {
+    }
+
+    public User(Optional<User> loggedUser) {
+        this.name = loggedUser.get().getName();
+        this.email = loggedUser.get().getEmail();
+        this.phone = loggedUser.get().getPhone();
+        this.id = loggedUser.get().getId();
     }
 
     public void userUpdateData(UserUpdateDTO dto){
